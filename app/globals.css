@@ -1,5 +1,3 @@
-@import "tailwindcss";
-@theme {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
