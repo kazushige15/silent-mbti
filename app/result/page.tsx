@@ -1,6 +1,6 @@
-export const dynamic = 'force-dynamic';
+'use client'; // 👈 必ずこれが絶対の1行目！
 
-'use client';
+export const dynamic = 'force-dynamic'; // 👈 2行目に移動しました
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
@@ -80,22 +80,18 @@ function ResultContent() {
     (silentScores.time + silentScores.relations + silentScores.cognition + silentScores.interest + silentScores.activity + silentScores.values) / 6
   );
 
-  // 💡 【環境系】のサイレント判定（50%以上）
   const isTimeSilent = silentScores.time >= 50;
   const isRelationsSilent = silentScores.relations >= 50;
   const isCognitionSilent = silentScores.cognition >= 50;
   const envOverlapCount = [isTimeSilent, isRelationsSilent, isCognitionSilent].filter(Boolean).length;
 
-  // 💡 【行動系】のサイレント判定（50%以上）
   const isInterestSilent = silentScores.interest >= 50;
   const isActivitySilent = silentScores.activity >= 50;
   const isValuesSilent = silentScores.values >= 50;
   const actOverlapCount = [isInterestSilent, isActivitySilent, isValuesSilent].filter(Boolean).length;
 
-  // 全6項目中の合計重なり数
   const totalOverlapCount = envOverlapCount + actOverlapCount;
 
-  // ベン図から導き出す詳細なテキスト
   let vennMessage = "";
   if (totalOverlapCount === 0) {
     vennMessage = "驚異のアクティブ度！サイレントな要素が一つも見当たりません。";
@@ -109,7 +105,6 @@ function ResultContent() {
     vennMessage = "いくつかの要因が少しずつ重なっています。ちょっとしたきっかけでアクティブに変貌するライト層です。";
   }
 
-  // 称号の決定
   let title = 'パッシブ・オブザーバー（静かな観察者）';
   let description = '街の動きはなんとなく見ているものの、自分から関わる動機がまだ見つかっていない標準的なサイレント層です。';
 
@@ -131,7 +126,6 @@ function ResultContent() {
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
         
-        {/* ヘッダー・総合結果 */}
         <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white text-center py-12 px-6">
           <p className="text-sm font-semibold tracking-widest text-indigo-200 uppercase mb-2">あなたのサイレント特性タイプ</p>
           <h1 className="text-3xl font-extrabold mb-4">{title}</h1>
@@ -140,7 +134,6 @@ function ResultContent() {
           </div>
         </div>
 
-        {/* 説明文 */}
         <div className="p-8 border-b border-slate-100 text-center">
           <p className="text-slate-600 leading-relaxed mb-4">{description}</p>
           <div className="inline-block bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-sm text-indigo-700 font-medium max-w-md">
@@ -148,7 +141,6 @@ function ResultContent() {
           </div>
         </div>
 
-        {/* 📊 新機能：環境系＆行動系のダブルベン図エリア */}
         <div className="p-8 border-b border-slate-100 bg-slate-50/50">
           <h3 className="text-lg font-bold text-slate-800 mb-8 text-center">
             サイレント要因のダブルベン図分析
@@ -156,29 +148,24 @@ function ResultContent() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 justify-items-center">
             
-            {/* 左側：環境系ベン図 */}
             <div className="flex flex-col items-center">
               <span className="text-xs font-bold text-slate-500 bg-slate-200 px-3 py-1 rounded-full mb-4">環境系（状況の壁）</span>
               <div className="relative w-48 h-48">
-                {/* 時間 */}
                 <div className={`absolute top-2 left-1/2 -translate-x-1/2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isTimeSilent ? 'bg-rose-500/30 text-rose-700 border-rose-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mb-8">時間</span>
                 </div>
-                {/* 人間関係 */}
                 <div className={`absolute bottom-2 left-2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isRelationsSilent ? 'bg-blue-500/30 text-blue-700 border-blue-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mt-8 ml-4">人間関係</span>
                 </div>
-                {/* 認知 */}
                 <div className={`absolute bottom-2 right-2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isCognitionSilent ? 'bg-amber-500/30 text-amber-700 border-amber-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mt-8 mr-4">認知</span>
                 </div>
-                {/* 環境系中央の重なり */}
                 {envOverlapCount === 3 && (
                   <div className="absolute top-[38%] left-[38%] w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-[8px] font-extrabold text-white shadow z-20">
                     濃
@@ -187,29 +174,24 @@ function ResultContent() {
               </div>
             </div>
 
-            {/* 右側：行動系ベン図 */}
             <div className="flex flex-col items-center">
               <span className="text-xs font-bold text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full mb-4">行動系（意識の壁）</span>
               <div className="relative w-48 h-48">
-                {/* 興味 */}
                 <div className={`absolute top-2 left-1/2 -translate-x-1/2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isInterestSilent ? 'bg-teal-500/30 text-teal-700 border-teal-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mb-8">興味</span>
                 </div>
-                {/* 活動 */}
                 <div className={`absolute bottom-2 left-2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isActivitySilent ? 'bg-purple-500/30 text-purple-700 border-purple-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mt-8 ml-4">活動</span>
                 </div>
-                {/* 価値観 */}
                 <div className={`absolute bottom-2 right-2 w-28 h-28 rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
                   isValuesSilent ? 'bg-emerald-500/30 text-emerald-700 border-emerald-400 z-10' : 'bg-slate-200/40 text-slate-400 border-slate-200'
                 }`}>
                   <span className="mt-8 mr-4">価値観</span>
                 </div>
-                {/* 行動系中央の重なり */}
                 {actOverlapCount === 3 && (
                   <div className="absolute top-[38%] left-[38%] w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center text-[8px] font-extrabold text-white shadow z-20">
                     濃
@@ -220,7 +202,6 @@ function ResultContent() {
 
           </div>
 
-          {/* 両方のベン図がマックス（超サイレント層）のときの特別演出 */}
           {totalOverlapCount === 6 && (
             <div className="mt-6 bg-red-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl text-center animate-bounce shadow-md">
               ⚠️ 全ての要因が重なった【完全なる超サイレント層】です！
@@ -228,7 +209,6 @@ function ResultContent() {
           )}
         </div>
 
-        {/* MBTI風 パラメーター表示エリア */}
         <div className="p-8 space-y-8">
           <h2 className="text-xl font-bold text-slate-800 border-l-4 border-indigo-600 pl-3 mb-6">
             6つの特性パラメータ分析
@@ -244,8 +224,8 @@ function ResultContent() {
                 </div>
                 
                 <div className="w-full bg-slate-100 h-6 rounded-full overflow-hidden flex relative border border-slate-200">
-                  <div className="bg-emerald-400 h-full transition-all duration-500" style={{ width: `${100 - percent}%` }}></div>
-                  <div className="bg-indigo-500 h-full transition-all duration-500" style={{ width: `${percent}%` }}></div>
+                  <div className="bg-emerald-400 h-full" style={{ width: `${100 - percent}%` }}></div>
+                  <div className="bg-indigo-500 h-full" style={{ width: `${percent}%` }}></div>
                   <div className="absolute top-0 left-1/2 w-[2px] h-full bg-white/50"></div>
                 </div>
 
@@ -259,7 +239,6 @@ function ResultContent() {
           })}
         </div>
 
-        {/* もう一度診断するボタン */}
         <div className="p-8 bg-slate-50 text-center">
           <button
             onClick={() => router.push('/diagnostic')}
