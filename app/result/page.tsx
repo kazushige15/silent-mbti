@@ -18,15 +18,30 @@ function ResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // 診断ページから渡された6文字タイプを確実に取得
-  const typeCode = searchParams.get('type') || 'SSSSSS';
-  
-  const getPercent = (key: string) => {
-    const score = parseInt(searchParams.get(key) || '0', 10);
-    return Math.max(0, Math.min(100, (score + 4) * 12.5));
+  // スコアの取得
+  const getScore = (key: string) => parseInt(searchParams.get(key) || '0', 10);
+  const scores = {
+    time: getScore('time'),
+    relations: getScore('relations'),
+    cognition: getScore('cognition'),
+    interest: getScore('interest'),
+    activity: getScore('activity'),
+    values: getScore('values'),
   };
 
-  const scores = {
+  // 6文字コードをここで再計算（これが今回の修正の核心です）
+  const typeCode = [
+    scores.time >= 0 ? 'A' : 'S',
+    scores.relations >= 0 ? 'O' : 'S',
+    scores.cognition >= 0 ? 'I' : 'S',
+    scores.interest >= 0 ? 'T' : 'S',
+    scores.activity >= 0 ? 'F' : 'S',
+    scores.values >= 0 ? 'V' : 'S',
+  ].join('');
+
+  const getPercent = (key: string) => Math.max(0, Math.min(100, (getScore(key) + 4) * 12.5));
+  
+  const percents = {
     time: getPercent('time'),
     relations: getPercent('relations'),
     cognition: getPercent('cognition'),
@@ -36,25 +51,25 @@ function ResultContent() {
   };
 
   const isSilent = {
-    time: scores.time >= 50,
-    relations: scores.relations >= 50,
-    cognition: scores.cognition >= 50,
-    interest: scores.interest >= 50,
-    activity: scores.activity >= 50,
-    values: scores.values >= 50,
+    time: percents.time >= 50,
+    relations: percents.relations >= 50,
+    cognition: percents.cognition >= 50,
+    interest: percents.interest >= 50,
+    activity: percents.activity >= 50,
+    values: percents.values >= 50,
   };
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
         
-        {/* --- ここで typeCode を大きく表示 --- */}
+        {/* 6文字コード表示 */}
         <div className="text-center mb-8">
           <p className="text-sm font-bold text-indigo-500 tracking-widest uppercase mb-2">あなたの診断タイプ</p>
           <h1 className="text-6xl font-black text-slate-800 tracking-tighter mb-4">{typeCode}</h1>
         </div>
 
-        {/* --- ベン図セクション --- */}
+        {/* ベン図 */}
         <div className="bg-slate-50 p-6 rounded-2xl mb-8 border border-slate-100">
           <h3 className="font-bold text-slate-800 text-center mb-6 text-sm">サイレント要因の可視化</h3>
           <div className="flex justify-center gap-8">
@@ -77,9 +92,9 @@ function ResultContent() {
           </div>
         </div>
 
-        {/* --- スライダーバー --- */}
+        {/* バー分析 */}
         <div className="space-y-6 mb-10">
-          {Object.entries(scores).map(([key, percent]) => (
+          {Object.entries(percents).map(([key, percent]) => (
             <div key={key}>
               <div className="flex justify-between text-xs font-bold text-slate-500 mb-1">
                 <span>{PARAM_INFO[key].leftText}</span>
