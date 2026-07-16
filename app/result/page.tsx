@@ -20,12 +20,9 @@ function ResultContent() {
 
   const typeCode = searchParams.get('type') || 'SSSSSS';
   
-  // 生スコアを取得してパーセンテージ化
   const getPercent = (key: string) => {
     const score = parseInt(searchParams.get(key) || '0', 10);
-    // スコアの範囲を考慮して0-100%に正規化 (仮定: -4〜+4程度が中心)
-    const normalized = Math.max(0, Math.min(100, (score + 4) * 12.5));
-    return normalized;
+    return Math.max(0, Math.min(100, (score + 4) * 12.5));
   };
 
   const scores = {
@@ -37,15 +34,48 @@ function ResultContent() {
     values: getPercent('values'),
   };
 
+  // サイレント判定（50%以上をサイレントとする）
+  const isSilent = {
+    time: scores.time >= 50,
+    relations: scores.relations >= 50,
+    cognition: scores.cognition >= 50,
+    interest: scores.interest >= 50,
+    activity: scores.activity >= 50,
+    values: scores.values >= 50,
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
         
-        {/* 6文字のアルファベットタイプ */}
         <div className="text-center mb-8">
           <p className="text-sm font-bold text-indigo-500 tracking-widest uppercase mb-2">あなたの診断タイプ</p>
           <h1 className="text-6xl font-black text-slate-800 tracking-tighter mb-4">{typeCode}</h1>
-          <p className="text-slate-500 font-medium">街との距離感を示す6つの指標</p>
+        </div>
+
+        {/* --- ベン図セクションを追加 --- */}
+        <div className="bg-slate-50 p-6 rounded-2xl mb-8 border border-slate-100">
+          <h3 className="font-bold text-slate-800 text-center mb-6">サイレント要因の可視化</h3>
+          <div className="flex justify-center gap-8">
+            {/* 環境系の円 */}
+            <div className="relative w-24 h-24">
+              {[ {key: 'time', pos: 'top'}, {key: 'relations', pos: 'left'}, {key: 'cognition', pos: 'right'} ].map((item, i) => (
+                <div key={item.key} className={`absolute w-12 h-12 rounded-full border-2 flex items-center justify-center text-[8px] font-bold ${isSilent[item.key as keyof typeof isSilent] ? 'bg-rose-200 border-rose-400' : 'bg-slate-200 border-slate-300'}`}
+                  style={{ top: item.pos === 'top' ? '0' : '50%', left: item.pos === 'top' ? '25%' : item.pos === 'left' ? '0' : '50%' }}>
+                  {PARAM_INFO[item.key].label}
+                </div>
+              ))}
+            </div>
+            {/* 行動系の円 */}
+            <div className="relative w-24 h-24">
+              {[ {key: 'interest', pos: 'top'}, {key: 'activity', pos: 'left'}, {key: 'values', pos: 'right'} ].map((item, i) => (
+                <div key={item.key} className={`absolute w-12 h-12 rounded-full border-2 flex items-center justify-center text-[8px] font-bold ${isSilent[item.key as keyof typeof isSilent] ? 'bg-indigo-200 border-indigo-400' : 'bg-slate-200 border-slate-300'}`}
+                  style={{ top: item.pos === 'top' ? '0' : '50%', left: item.pos === 'top' ? '25%' : item.pos === 'left' ? '0' : '50%' }}>
+                  {PARAM_INFO[item.key].label}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 6つのバー分析 */}
@@ -59,27 +89,16 @@ function ResultContent() {
               </div>
               <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-indigo-500"></div>
-                <div 
-                  className="absolute top-0 h-4 w-4 bg-white border-2 border-indigo-600 rounded-full shadow-md transition-all duration-500"
-                  style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}
-                ></div>
+                <div className="absolute top-0 h-4 w-4 bg-white border-2 border-indigo-600 rounded-full shadow-md transition-all duration-500"
+                  style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}></div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* ベン図の簡易解説など */}
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-8">
-          <h3 className="font-bold text-slate-800 mb-2">診断分析レポート</h3>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            あなたのタイプ {typeCode} は、地域との関わりにおいて「{typeCode[0] === 'A' ? '活動的な時間活用' : '静かな時間活用'}」を基盤としています。
-            詳細な分析に基づき、あなたの街との最適な距離感をご提案します。
-          </p>
-        </div>
-
         <button
           onClick={() => router.push('/diagnostic')}
-          className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-indigo-200"
+          className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all shadow-lg"
         >
           もう一度診断する
         </button>
@@ -90,7 +109,7 @@ function ResultContent() {
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">読み込み中...</div>}>
+    <Suspense fallback={<div>読み込み中...</div>}>
       <ResultContent />
     </Suspense>
   );
