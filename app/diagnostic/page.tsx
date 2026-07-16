@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// 問題データをこのファイル内に安全に持たせます
 const QUESTIONS = [
   { id: 1, text: '地域の祭りやイベントの情報を知った時、自分から詳しく調べる。', category: 'interest', type: 'plus' },
   { id: 2, text: '回覧板や地域の掲示板、ポスティングのチラシをよく読む。', category: 'cognition', type: 'plus' },
@@ -43,22 +42,25 @@ export default function DiagnosticPage() {
     if (currentIndex < QUESTIONS.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      // 全問終わったら集計して結果ページへ
       const scores: Record<string, number> = { time: 0, relations: 0, cognition: 0, interest: 0, activity: 0, values: 0 };
       
       QUESTIONS.forEach((q, index) => {
         const ans = nextAnswers[index];
-        const finalScore = q.type === 'plus' ? ans : -ans;
-        scores[q.category] += finalScore;
+        scores[q.category] += q.type === 'plus' ? ans : -ans;
       });
 
+      const typeCode = [
+        scores.time >= 0 ? 'A' : 'S',
+        scores.relations >= 0 ? 'O' : 'S',
+        scores.cognition >= 0 ? 'I' : 'S',
+        scores.interest >= 0 ? 'T' : 'S',
+        scores.activity >= 0 ? 'F' : 'S',
+        scores.values >= 0 ? 'V' : 'S',
+      ].join('');
+
       const query = new URLSearchParams({
-        time: scores.time.toString(),
-        relations: scores.relations.toString(),
-        cognition: scores.cognition.toString(),
-        interest: scores.interest.toString(),
-        activity: scores.activity.toString(),
-        values: scores.values.toString(),
+        type: typeCode,
+        ...Object.fromEntries(Object.entries(scores).map(([k, v]) => [k, v.toString()])),
       }).toString();
 
       router.push(`/result?${query}`);
@@ -71,41 +73,28 @@ export default function DiagnosticPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
       <div className="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
-        
-        {/* プログレスバー */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-slate-400 font-bold mb-2">
             <span>質問 {currentIndex + 1} / {QUESTIONS.length}</span>
-            <span>進捗率 {progressPercent}%</span>
+            <span>{progressPercent}%</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div className="bg-indigo-600 h-full transition-all duration-300" style={{ width: `${progressPercent}%` }}></div>
           </div>
         </div>
 
-        {/* 質問文 */}
         <div className="min-h-[140px] flex items-center justify-center mb-8">
           <h2 className="text-xl md:text-2xl font-bold text-slate-800 text-center leading-relaxed">
             {currentQuestion.text}
           </h2>
         </div>
 
-        {/* 選択肢ボタン */}
         <div className="flex flex-col gap-3">
-          <button onClick={() => handleAnswer(2)} className="w-full py-4 px-6 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-2xl border border-emerald-200 transition-all text-left md:text-center text-base">
-            とてもあてはまる
-          </button>
-          <button onClick={() => handleAnswer(1)} className="w-full py-4 px-6 bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 font-semibold rounded-2xl border border-emerald-100 transition-all text-left md:text-center text-base">
-            ややあてはまる
-          </button>
-          <button onClick={() => handleAnswer(-1)} className="w-full py-4 px-6 bg-rose-50/50 hover:bg-rose-100/50 text-rose-700 font-semibold rounded-2xl border border-rose-100 transition-all text-left md:text-center text-base">
-            あまりあてはまらない
-          </button>
-          <button onClick={() => handleAnswer(-2)} className="w-full py-4 px-6 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold rounded-2xl border border-rose-200 transition-all text-left md:text-center text-base">
-            全くあてはまらない
-          </button>
+          <button onClick={() => handleAnswer(2)} className="w-full py-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-2xl border border-emerald-200 transition-all">とてもあてはまる</button>
+          <button onClick={() => handleAnswer(1)} className="w-full py-4 bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 font-semibold rounded-2xl border border-emerald-100 transition-all">ややあてはまる</button>
+          <button onClick={() => handleAnswer(-1)} className="w-full py-4 bg-rose-50/50 hover:bg-rose-100/50 text-rose-700 font-semibold rounded-2xl border border-rose-100 transition-all">あまりあてはまらない</button>
+          <button onClick={() => handleAnswer(-2)} className="w-full py-4 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold rounded-2xl border border-rose-200 transition-all">全くあてはまらない</button>
         </div>
-
       </div>
     </div>
   );
