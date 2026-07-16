@@ -18,6 +18,7 @@ function ResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  // 診断ページから渡された6文字タイプを確実に取得
   const typeCode = searchParams.get('type') || 'SSSSSS';
   
   const getPercent = (key: string) => {
@@ -47,13 +48,13 @@ function ResultContent() {
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
         
-        {/* --- ここで両方表示されるようにしました --- */}
+        {/* --- ここで typeCode を大きく表示 --- */}
         <div className="text-center mb-8">
           <p className="text-sm font-bold text-indigo-500 tracking-widest uppercase mb-2">あなたの診断タイプ</p>
           <h1 className="text-6xl font-black text-slate-800 tracking-tighter mb-4">{typeCode}</h1>
-          <p className="text-slate-500 font-medium">街との距離感を示す6つの指標</p>
         </div>
 
+        {/* --- ベン図セクション --- */}
         <div className="bg-slate-50 p-6 rounded-2xl mb-8 border border-slate-100">
           <h3 className="font-bold text-slate-800 text-center mb-6 text-sm">サイレント要因の可視化</h3>
           <div className="flex justify-center gap-8">
@@ -76,6 +77,7 @@ function ResultContent() {
           </div>
         </div>
 
+        {/* --- スライダーバー --- */}
         <div className="space-y-6 mb-10">
           {Object.entries(scores).map(([key, percent]) => (
             <div key={key}>
