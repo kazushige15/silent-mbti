@@ -91,7 +91,7 @@ const size = (score: number) => {
           <div className="relative h-72">
             {/* 時間 */}
             <div
-              className={`absolute left-1/2 top-0 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
+              className={`absolute left-1/2 top-8 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
               style={{
                 width: size(scores.time),
                 height: size(scores.time),
@@ -103,7 +103,7 @@ const size = (score: number) => {
 
             {/* 人間関係 */}
             <div
-              className={`absolute left-4 bottom-8 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
+              className={`absolute left-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
               style={{
                 width: size(scores.relations),
                 height: size(scores.relations),
@@ -115,7 +115,7 @@ const size = (score: number) => {
 
             {/* 認知 */}
             <div
-              className={`absolute right-4 bottom-8 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
+              className={`absolute right-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
               style={{
                 width: size(scores.cognition),
                 height: size(scores.cognition),
@@ -126,7 +126,7 @@ const size = (score: number) => {
             </div>
 
             {/* 中央 */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
+            <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
               あなた
             </div>
           </div>
@@ -143,7 +143,7 @@ const size = (score: number) => {
           <div className="relative h-72">
             {/* 興味 */}
             <div
-              className={`absolute left-1/2 top-0 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.interest)}`}
+              className={`absolute left-1/2 top-8 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.interest)}`}
               style={{
                 width: size(scores.interest),
                 height: size(scores.interest),
@@ -155,7 +155,7 @@ const size = (score: number) => {
 
             {/* 活動 */}
             <div
-              className={`absolute left-4 bottom-8 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.activity)}`}
+              className={`absolute left-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.activity)}`}
               style={{
                 width: size(scores.activity),
                 height: size(scores.activity),
@@ -167,7 +167,7 @@ const size = (score: number) => {
 
             {/* 価値観 */}
             <div
-              className={`absolute right-4 bottom-8 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.values)}`}
+              className={`absolute right-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.values)}`}
               style={{
                 width: size(scores.values),
                 height: size(scores.values),
@@ -178,7 +178,7 @@ const size = (score: number) => {
             </div>
 
             {/* 中央 */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
+            <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
               あなた
             </div>
           </div>
