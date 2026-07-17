@@ -23,8 +23,16 @@ const LABELS = {
 };
 
 export default function VennDiagram({ scores }: Props) {
-  // 円の大きさ（45〜85px）
-  const size = (score: number) => 45 + (Math.abs(score) / 8) * 40;
+// 円の大きさ（サイレント要因が強いほど大きく表示）
+const size = (score: number) => {
+  // プラス・0は小さく固定
+  if (score >= 0) {
+    return 40;
+  }
+
+  // マイナスになるほど大きく表示（-8で85px）
+  return 40 + (-score / 8) * 45;
+};
 
   // 色判定
   const color = (score: number) => {
