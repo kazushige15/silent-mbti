@@ -91,7 +91,7 @@ const size = (score: number) => {
           <div className="relative h-72">
             {/* 時間 */}
             <div
-              className={`absolute left-1/2 top-40 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
+              className={`absolute left-1/2 top-35 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
               style={{
                 width: size(scores.time),
                 height: size(scores.time),
@@ -143,7 +143,7 @@ const size = (score: number) => {
           <div className="relative h-72">
             {/* 興味 */}
             <div
-              className={`absolute left-1/2 top-8 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.interest)}`}
+              className={`absolute left-1/2 top-35 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.interest)}`}
               style={{
                 width: size(scores.interest),
                 height: size(scores.interest),
