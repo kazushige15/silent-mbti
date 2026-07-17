@@ -16,12 +16,12 @@ interface AxisInfo {
 }
 
 const AXIS_INFO: Record<AxisKey, AxisInfo> = {
-  time: { label: '時間', activeLabel: '活動的', silentLabel: '暇/在宅', silentFill: '#cbd5e1', silentStroke: '#64748b' },
-  relations: { label: '人間関係', activeLabel: '社交的', silentLabel: '単独好み', silentFill: '#93c5fd', silentStroke: '#2563eb' },
-  cognition: { label: '認知', activeLabel: '情報敏感', silentLabel: '情報遮断', silentFill: '#fcd34d', silentStroke: '#d97706' },
-  interest: { label: '興味', activeLabel: '敏感', silentLabel: '無関心', silentFill: '#5eead4', silentStroke: '#0d9488' },
-  activity: { label: '活動', activeLabel: '行動派', silentLabel: '未経験', silentFill: '#d8b4fe', silentStroke: '#9333ea' },
-  values: { label: '価値観', activeLabel: '貢献志向', silentLabel: '自己完結', silentFill: '#6ee7b7', silentStroke: '#059669' },
+  time: { label: '時間', activeLabel: '活動的', silentLabel: '暇/在宅', silentFill: '#a7f3d0', silentStroke: '#059669' },
+  relations: { label: '人間関係', activeLabel: '社交的', silentLabel: '単独好み', silentFill: '#bbf7d0', silentStroke: '#16a34a' },
+  cognition: { label: '認知', activeLabel: '情報敏感', silentLabel: '情報遮断', silentFill: '#d9f99d', silentStroke: '#65a30d' },
+  interest: { label: '興味', activeLabel: '敏感', silentLabel: '無関心', silentFill: '#99f6e4', silentStroke: '#0d9488' },
+  activity: { label: '活動', activeLabel: '行動派', silentLabel: '未経験', silentFill: '#86efac', silentStroke: '#15803d' },
+  values: { label: '価値観', activeLabel: '貢献志向', silentLabel: '自己完結', silentFill: '#5eead4', silentStroke: '#0f766e' },
 };
 
 const AXIS_ORDER: AxisKey[] = ['time', 'relations', 'cognition', 'interest', 'activity', 'values'];
@@ -117,7 +117,7 @@ function ResultContent() {
 
         {/* ヘッダー */}
         <div className="text-center mb-10">
-          <p className="text-indigo-500 font-bold text-lg mb-3">あなたの診断タイプ</p>
+          <p className="text-emerald-600 font-bold text-lg mb-3">あなたの診断タイプ</p>
           <h1 className="text-7xl font-black text-slate-900 tracking-wide">{typeCode}</h1>
         </div>
 
@@ -128,7 +128,7 @@ function ResultContent() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="flex justify-center mb-2">
-                <span className="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-full">
+                <span className="bg-emerald-50 text-emerald-600 text-xs font-bold px-3 py-1.5 rounded-full">
                   環境系（状況の壁）
                 </span>
               </div>
@@ -137,7 +137,7 @@ function ResultContent() {
 
             <div>
               <div className="flex justify-center mb-2">
-                <span className="bg-teal-50 text-teal-600 text-xs font-bold px-3 py-1.5 rounded-full">
+                <span className="bg-lime-50 text-lime-700 text-xs font-bold px-3 py-1.5 rounded-full">
                   行動系（意識の壁）
                 </span>
               </div>
@@ -155,12 +155,12 @@ function ResultContent() {
               <div key={key}>
                 <div className="flex justify-between items-end mb-2">
                   <span className="text-xs text-slate-400 font-medium">{info.activeLabel}</span>
-                  <span className="text-sm font-bold text-indigo-600">{info.label}</span>
+                  <span className="text-sm font-bold text-emerald-600">{info.label}</span>
                   <span className="text-xs text-slate-400 font-medium">{info.silentLabel}</span>
                 </div>
-                <div className="relative h-2 rounded-full bg-gradient-to-r from-teal-400 to-blue-600">
+                <div className="relative h-2 rounded-full bg-gradient-to-r from-emerald-300 via-emerald-500 to-green-700">
                   <div
-                    className="absolute top-1/2 w-5 h-5 bg-white rounded-full shadow-md border border-slate-200"
+                    className="absolute top-1/2 w-5 h-5 bg-white rounded-full shadow-md border border-emerald-300"
                     style={{ left: `${percent}%`, transform: 'translate(-50%, -50%)' }}
                   ></div>
                 </div>
@@ -171,7 +171,7 @@ function ResultContent() {
 
         <button
           onClick={() => router.push('/diagnostic')}
-          className="w-full mt-12 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all shadow-lg"
+          className="w-full mt-12 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl transition-all shadow-lg"
         >
           もう一度診断する
         </button>
