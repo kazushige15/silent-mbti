@@ -53,11 +53,14 @@ function ResultContent() {
         <div className="space-y-6 mb-10">
           {Object.entries(scores).map(([key, percent]) => (
             <div key={key}>
-              <div className="flex justify-between text-xs font-bold text-slate-500 mb-1">
+              <div className="flex justify-between items-center text-sm font-bold text-slate-500 mb-2">
                 <span>{PARAM_INFO[key].leftText}</span>
-                <span className="text-indigo-600">{PARAM_INFO[key].label}</span>
+                <span className="text-lg font-extrabold text-indigo-600">
+                  {PARAM_INFO[key].label}
+                </span>
                 <span>{PARAM_INFO[key].rightText}</span>
               </div>
+
               <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-indigo-500"></div>
                 <div 
