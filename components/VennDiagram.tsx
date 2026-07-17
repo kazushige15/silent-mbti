@@ -86,7 +86,7 @@ const size = (score: number) => {
             </span>
           </div>
 
-          <div className="relative h-72">
+          <div className="relative h-96">
             {/* 時間 */}
             <div
               className={`absolute left-1/2 top-38 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
