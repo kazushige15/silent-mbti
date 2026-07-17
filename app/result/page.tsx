@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import VennDiagram from '@/components/VennDiagram';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -66,6 +67,20 @@ function ResultContent() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* ベン図の表示エリア */}
+        <div className="mb-10 flex justify-center">
+          <VennDiagram
+            scores={{
+              time: parseInt(searchParams.get('time') || '0', 10),
+              relations: parseInt(searchParams.get('relations') || '0', 10),
+              cognition: parseInt(searchParams.get('cognition') || '0', 10),
+              interest: parseInt(searchParams.get('interest') || '0', 10),
+              activity: parseInt(searchParams.get('activity') || '0', 10),
+              values: parseInt(searchParams.get('values') || '0', 10),
+            }}
+          />
         </div>
 
         {/* ベン図の簡易解説など */}
