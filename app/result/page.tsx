@@ -5,106 +5,110 @@ export const dynamic = 'force-dynamic';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 
-// --- 型定義 ---
-type AxisKey = 'time' | 'relations' | 'cognition' | 'interest' | 'activity' | 'values';
-type Group = 'env' | 'mind';
-
-interface AxisInfo {
-  label: string;
-  group: Group;
-  icon: string;
-  activeLetter: string;
-  activeLabel: string;
-  silentLabel: string;
-  activeDesc: string;
-  silentDesc: string;
-}
-
-// --- 設定データ ---
-const AXIS_INFO: Record<AxisKey, AxisInfo> = {
-  time: { label: '時間', group: 'env', icon: '⏰', activeLetter: 'A', activeLabel: '活動的', silentLabel: 'サイレント', activeDesc: '多忙・多趣味で余白少なめ。短時間参加が吉。', silentDesc: '在宅・暇があるが地域へ向かっていない。' },
-  relations: { label: '人間関係', group: 'env', icon: '🤝', activeLetter: 'O', activeLabel: '社交的', silentLabel: 'サイレント', activeDesc: '人との関わりが自然。ハードル低め。', silentDesc: '単独好み。心理的ハードルが高め。' },
-  cognition: { label: '認知', group: 'env', icon: '📰', activeLetter: 'I', activeLabel: '情報敏感', silentLabel: 'サイレント', activeDesc: '能動的な情報収集習慣あり。', silentDesc: '情報遮断。手段が不足している可能性。' },
-  interest: { label: '興味', group: 'mind', icon: '👀', activeLetter: 'T', activeLabel: 'トレンド敏感', silentLabel: 'サイレント', activeDesc: '街の変化を楽める感性。', silentDesc: '低関心。別の切り口が必要。' },
-  activity: { label: '活動', group: 'mind', icon: '🚶', activeLetter: 'F', activeLabel: 'フットワーク軽', silentLabel: 'サイレント', activeDesc: '気になったら即行動。', silentDesc: '未経験。一歩が重い状態。' },
-  values: { label: '価値観', group: 'mind', icon: '💛', activeLetter: 'V', activeLabel: '他者貢献', silentLabel: 'サイレント', activeDesc: '地域へ還元したい意識あり。', silentDesc: '自己完結。運営側の動機が弱い。' },
+// --- 設定データ（画像のデザインに合わせたラベル定義） ---
+const AXIS_INFO = {
+  time: { label: '時間', active: '活動的', silent: '暇/在宅' },
+  relations: { label: '人間関係', active: '社交的', silent: '単独好み' },
+  cognition: { label: '認知', active: '情報敏感', silent: '情報遮断' },
+  interest: { label: '興味', active: '敏感', silent: '無関心' },
+  activity: { label: '活動', active: '行動派', silent: '未経験' },
+  values: { label: '価値観', active: '貢献志向', silent: '自己完結' },
 };
 
-const AXIS_ORDER: AxisKey[] = ['time', 'relations', 'cognition', 'interest', 'activity', 'values'];
-const ENV_AXES: AxisKey[] = ['time', 'relations', 'cognition'];
-const MIND_AXES: AxisKey[] = ['interest', 'activity', 'values'];
+const AXIS_ORDER = ['time', 'relations', 'cognition', 'interest', 'activity', 'values'];
 
-// --- コンポーネント: 6文字表示 ---
-const TypeCodeDisplay = ({ code }: { code: string }) => (
-  <div className="flex justify-center gap-1.5 md:gap-3 my-8">
-    {code.split('').map((char, index) => {
-      const isSilent = char === 'S';
-      return (
-        <div
-          key={index}
-          className={`w-12 h-16 md:w-16 md:h-20 flex items-center justify-center rounded-2xl text-3xl md:text-4xl font-black shadow-lg border-b-4 
-            ${isSilent 
-              ? 'bg-rose-100 text-rose-600 border-rose-300' 
-              : 'bg-emerald-100 text-emerald-600 border-emerald-300'
-            }`}
-        >
-          {char}
-        </div>
-      );
-    })}
+// --- UIコンポーネント ---
+
+// 1. スライダーバー
+const SliderBar = ({ label, activeLabel, silentLabel, score }: any) => {
+  // スコア -8〜+8 を 0〜100% に変換 (左が活動的、右がサイレント)
+  // 計算: (-8 → 0%, 0 → 50%, +8 → 100%)
+  const percentage = ((score + 8) / 16) * 100;
+
+  return (
+    <div className="w-full mb-6">
+      <div className="flex justify-between text-xs text-slate-500 mb-1 px-1">
+        <span>{activeLabel}</span>
+        <span className="font-bold text-indigo-700">{label}</span>
+        <span>{silentLabel}</span>
+      </div>
+      <div className="relative h-4 w-full rounded-full bg-gradient-to-r from-teal-400 to-indigo-600">
+        <div 
+          className="absolute top-0 w-4 h-4 bg-white border-2 border-indigo-600 rounded-full shadow-md transition-all duration-500"
+          style={{ left: `${percentage}%`, transform: 'translateX(-50%)' }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// 2. ベン図（SVG）
+const VennDiagrams = () => (
+  <div className="flex justify-center gap-8 mb-10 overflow-x-auto p-4">
+    {/* 環境系 */}
+    <div className="text-center">
+      <p className="text-xs font-bold text-slate-500 mb-2">環境系（状況の壁）</p>
+      <svg width="200" height="140" viewBox="0 0 200 140">
+        <circle cx="70" cy="70" r="50" fill="#38bdf8" fillOpacity="0.2" />
+        <circle cx="130" cy="70" r="50" fill="#fbbf24" fillOpacity="0.2" />
+        <text x="100" y="70" fontSize="10" textAnchor="middle" fontWeight="bold">時間/関係/認知</text>
+      </svg>
+    </div>
+    {/* 行動系 */}
+    <div className="text-center">
+      <p className="text-xs font-bold text-slate-500 mb-2">行動系（意識の壁）</p>
+      <svg width="200" height="140" viewBox="0 0 200 140">
+        <circle cx="70" cy="70" r="50" fill="#34d399" fillOpacity="0.2" />
+        <circle cx="130" cy="70" r="50" fill="#a78bfa" fillOpacity="0.2" />
+        <text x="100" y="70" fontSize="10" textAnchor="middle" fontWeight="bold">興味/活動/価値観</text>
+      </svg>
+    </div>
   </div>
 );
 
-// --- メインコンテンツ ---
 function ResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const getScore = (key: AxisKey) => parseInt(searchParams.get(key) || '0', 10);
-  const scores = Object.fromEntries(AXIS_ORDER.map((k) => [k, getScore(k)])) as Record<AxisKey, number>;
-  const isSilent = Object.fromEntries(AXIS_ORDER.map((k) => [k, scores[k] < 0])) as Record<AxisKey, boolean>;
-
-  const typeCode = AXIS_ORDER.map((k) => (isSilent[k] ? 'S' : AXIS_INFO[k].activeLetter)).join('');
-  const silentCount = AXIS_ORDER.filter((k) => isSilent[k]).length;
-  const envSilentCount = ENV_AXES.filter((k) => isSilent[k]).length;
-  const mindSilentCount = MIND_AXES.filter((k) => isSilent[k]).length;
-
-  // 判定ロジック
-  let overallLabel = '';
-  let overallDesc = '';
-  if (envSilentCount >= 2 && mindSilentCount >= 2) {
-    overallLabel = '真性サイレント層';
-    overallDesc = '「状況の壁」と「意識の壁」の両方が高い状態。参加への導線を見直す必要があります。';
-  } else if (envSilentCount >= 2 && mindSilentCount < 2) {
-    overallLabel = '状況的サイレント層';
-    overallDesc = '興味はあるのに「状況の壁」に阻まれている状態。参加コストを下げる工夫が有効です。';
-  } else if (envSilentCount < 2 && mindSilentCount >= 2) {
-    overallLabel = '意識的サイレント層';
-    overallDesc = '余裕はあるのに「意識の壁」が高い状態。動機づけの設計が鍵になります。';
-  } else {
-    overallLabel = 'アクティブ層';
-    overallDesc = '状況・意識どちらの壁も低く、地域活動に対して前向きに関わっていける状態です。';
-  }
+  // スコア取得（前回までのロジックを流用）
+  const getScore = (key: string) => parseInt(searchParams.get(key) || '0', 10);
+  
+  // A(Active), S(Silent) の判定
+  const typeCode = AXIS_ORDER.map((k) => (getScore(k) >= 0 ? 'A' : 'S')).join('');
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div className="min-h-screen bg-slate-50 py-10 px-4">
+      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-6">
         
-        {/* ヘッダーカード */}
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 text-center">
-          <p className="text-sm font-bold text-indigo-500 tracking-widest uppercase">あなたのタイプ</p>
-          <TypeCodeDisplay code={typeCode} />
-          <div className="inline-block bg-slate-800 text-white font-bold text-sm px-6 py-2 rounded-full mb-4">
-            {overallLabel}
-          </div>
-          <p className="text-slate-600 leading-relaxed max-w-md mx-auto">{overallDesc}</p>
+        {/* ヘッダー */}
+        <div className="text-center mb-8">
+          <p className="text-indigo-600 font-bold mb-2">あなたの診断タイプ</p>
+          <h1 className="text-5xl font-black text-slate-800 tracking-tight">{typeCode}</h1>
         </div>
 
-        {/* 詳細セクション（省略：必要に応じて前回のコードを結合してください） */}
-        
+        {/* ベン図 */}
+        <VennDiagrams />
+
+        {/* スライダー一覧 */}
+        <div className="space-y-2">
+          {AXIS_ORDER.map((key) => {
+            const info = AXIS_INFO[key as keyof typeof AXIS_INFO];
+            const score = getScore(key);
+            return (
+              <SliderBar 
+                key={key}
+                label={info.label}
+                activeLabel={info.active}
+                silentLabel={info.silent}
+                score={score}
+              />
+            );
+          })}
+        </div>
+
         <button
           onClick={() => router.push('/diagnostic')}
-          className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all shadow-lg"
+          className="w-full mt-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all"
         >
           もう一度診断する
         </button>
@@ -115,7 +119,7 @@ function ResultContent() {
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">読み込み中...</div>}>
+    <Suspense fallback={<div>読み込み中...</div>}>
       <ResultContent />
     </Suspense>
   );
