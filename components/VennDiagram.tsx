@@ -103,7 +103,7 @@ const size = (score: number) => {
 
             {/* 人間関係 */}
             <div
-              className={`absolute left-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
+              className={`absolute left-12 bottom-0 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
               style={{
                 width: size(scores.relations),
                 height: size(scores.relations),
@@ -115,7 +115,7 @@ const size = (score: number) => {
 
             {/* 認知 */}
             <div
-              className={`absolute right-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
+              className={`absolute right-12 bottom-0 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
               style={{
                 width: size(scores.cognition),
                 height: size(scores.cognition),
