@@ -91,7 +91,7 @@ const size = (score: number) => {
           <div className="relative h-72">
             {/* 時間 */}
             <div
-              className={`absolute left-1/2 top-20 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
+              className={`absolute left-1/2 top-30 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
               style={{
                 width: size(scores.time),
                 height: size(scores.time),
@@ -103,7 +103,7 @@ const size = (score: number) => {
 
             {/* 人間関係 */}
             <div
-              className={`absolute left-12 bottom-20 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
+              className={`absolute left-12 bottom-15 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
               style={{
                 width: size(scores.relations),
                 height: size(scores.relations),
@@ -115,7 +115,7 @@ const size = (score: number) => {
 
             {/* 認知 */}
             <div
-              className={`absolute right-12 bottom-20 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
+              className={`absolute right-12 bottom-15 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
               style={{
                 width: size(scores.cognition),
                 height: size(scores.cognition),
