@@ -50,10 +50,10 @@ function ResultContent() {
         </div>
 
         {/* 6つのバー分析 */}
-        <div className="space-y-6 mb-10">
+        <div className="space-y-8 mb-10">
           {Object.entries(scores).map(([key, percent]) => (
             <div key={key}>
-              <div className="flex justify-between items-center text-sm font-bold text-slate-500 mb-2">
+              <div className="flex justify-between items-center text-sm font-bold text-slate-500 mb-3">
                 <span>{PARAM_INFO[key].leftText}</span>
                 <span className="text-lg font-extrabold text-indigo-600">
                   {PARAM_INFO[key].label}
@@ -61,10 +61,19 @@ function ResultContent() {
                 <span>{PARAM_INFO[key].rightText}</span>
               </div>
 
-              <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-purple-600"></div>
+              {/* バー全体の親要素 */}
+              <div className="w-full h-4 bg-slate-100 rounded-full relative border border-slate-200 px-3 flex items-center">
+                
+                {/* グラデーションバー本体 */}
+                <div className="absolute inset-x-0 h-full bg-gradient-to-r from-orange-400 to-purple-600 rounded-full"></div>
+                
+                {/* 
+                  🌟 ツマミ（サイズ変更ポイント）
+                  h-7 w-7（28px）に拡大、border-3でフチもくっきりさせ、
+                  強めのシャドウ（shadow-xl）でしっかり立体感を出しました。
+                */}
                 <div 
-                  className="absolute top-0 h-4 w-4 bg-white border-2 border-purple-600 rounded-full shadow-md transition-all duration-500"
+                  className="relative h-7 w-7 bg-white border-[3px] border-purple-600 rounded-full shadow-xl transition-all duration-500 z-10"
                   style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}
                 ></div>
               </div>
