@@ -23,20 +23,12 @@ const LABELS = {
 };
 
 export default function VennDiagram({ scores }: Props) {
-// 円の大きさ（サイレント要因が強いほど大きく表示）
-const size = (score: number) => {
-  if (score >= 0) {
-    return 70;
-  }
-
-  return 70 + (-score / 8) * 100;
-};
-
-  // 色判定
-  const color = (score: number) => {
-    if (score > 0) return 'bg-emerald-400/50 border-emerald-500';
-    if (score < 0) return 'bg-rose-400/50 border-rose-500';
-    return 'bg-slate-300/50 border-slate-400';
+  // サイレント度（マイナススコア）に応じて灰色から段階的に赤くする関数
+  const colorBySilentLevel = (score: number) => {
+    if (score >= 0) return 'bg-slate-100/80 border-slate-300 text-slate-700'; // 通常（灰色）
+    if (score >= -2) return 'bg-rose-100/70 border-rose-300 text-rose-800';  // やや低い（薄い赤）
+    if (score >= -5) return 'bg-rose-300/80 border-rose-400 text-rose-900';  // 低い（中くらいの赤）
+    return 'bg-rose-500/80 border-rose-600 text-white font-bold';             // 非常に低い（濃い赤）
   };
 
   // 説明文
@@ -76,111 +68,90 @@ const size = (score: number) => {
         </h2>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-8 items-center">
 
         {/* 環境系 */}
-        <div>
-          <div className="text-center mb-4">
+        <div className="flex flex-col items-center">
+          <div className="text-center mb-6">
             <span className="inline-block px-4 py-2 bg-slate-100 rounded-full text-sm font-bold text-slate-700">
               環境系（状況の壁）
             </span>
           </div>
 
-          <div className="relative h-96">
-            {/* 時間 */}
+          {/* 固定サイズのベン図コンテナ */}
+          <div className="relative w-72 h-72 sm:w-80 sm:h-80 my-2">
+            {/* 上：時間 */}
             <div
-              className={`absolute left-1/2 top-20 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.time)}`}
-              style={{
-                width: size(scores.time),
-                height: size(scores.time),
-              }}
+              className={`absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center pt-2 text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.time)}`}
               title={`${LABELS.time}：${scores.time >= 0 ? '+' : ''}${scores.time}`}
             >
-              時間
+              <span className="-translate-y-12">{LABELS.time}</span>
             </div>
 
-            {/* 人間関係 */}
+            {/* 左下：人間関係 */}
             <div
-              className={`absolute left-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.relations)}`}
-              style={{
-                width: size(scores.relations),
-                height: size(scores.relations),
-              }}
+              className={`absolute bottom-0 left-0 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.relations)}`}
               title={`${LABELS.relations}：${scores.relations >= 0 ? '+' : ''}${scores.relations}`}
             >
-              人間
+              <span className="-translate-x-6 translate-y-6">人間関係</span>
             </div>
 
-            {/* 認知 */}
+            {/* 右下：認知 */}
             <div
-              className={`absolute right-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.cognition)}`}
-              style={{
-                width: size(scores.cognition),
-                height: size(scores.cognition),
-              }}
+              className={`absolute bottom-0 right-0 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.cognition)}`}
               title={`${LABELS.cognition}：${scores.cognition >= 0 ? '+' : ''}${scores.cognition}`}
             >
-              認知
+              <span className="translate-x-6 translate-y-6">{LABELS.cognition}</span>
             </div>
 
-            {/* 中央 */}
-            <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
+            {/* 中央：あなた */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-500/90 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md z-10">
               あなた
             </div>
           </div>
         </div>
 
         {/* 行動系 */}
-        <div>
-          <div className="text-center mb-4">
+        <div className="flex flex-col items-center">
+          <div className="text-center mb-6">
             <span className="inline-block px-4 py-2 bg-indigo-50 rounded-full text-sm font-bold text-indigo-700">
               行動系（意識の壁）
             </span>
           </div>
 
-          <div className="relative h-72">
-            {/* 興味 */}
+          {/* 固定サイズのベン図コンテナ */}
+          <div className="relative w-72 h-72 sm:w-80 sm:h-80 my-2">
+            {/* 上：興味 */}
             <div
-              className={`absolute left-1/2 top-20 -translate-x-1/2 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.interest)}`}
-              style={{
-                width: size(scores.interest),
-                height: size(scores.interest),
-              }}
+              className={`absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.interest)}`}
               title={`${LABELS.interest}：${scores.interest >= 0 ? '+' : ''}${scores.interest}`}
             >
-              興味
+              <span className="-translate-y-12">{LABELS.interest}</span>
             </div>
 
-            {/* 活動 */}
+            {/* 左下：活動 */}
             <div
-              className={`absolute left-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.activity)}`}
-              style={{
-                width: size(scores.activity),
-                height: size(scores.activity),
-              }}
+              className={`absolute bottom-0 left-0 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.activity)}`}
               title={`${LABELS.activity}：${scores.activity >= 0 ? '+' : ''}${scores.activity}`}
             >
-              活動
+              <span className="-translate-x-6 translate-y-6">{LABELS.activity}</span>
             </div>
 
-            {/* 価値観 */}
+            {/* 右下：価値観 */}
             <div
-              className={`absolute right-12 bottom-10 rounded-full border-2 flex items-center justify-center text-sm font-bold text-slate-800 transition-all duration-700 ${color(scores.values)}`}
-              style={{
-                width: size(scores.values),
-                height: size(scores.values),
-              }}
+              className={`absolute bottom-0 right-0 w-48 h-48 sm:w-52 sm:h-52 rounded-full border-2 flex items-center justify-center text-base font-bold transition-colors duration-500 ${colorBySilentLevel(scores.values)}`}
               title={`${LABELS.values}：${scores.values >= 0 ? '+' : ''}${scores.values}`}
             >
-              価値
+              <span className="translate-x-6 translate-y-6">{LABELS.values}</span>
             </div>
 
-            {/* 中央 */}
-            <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg">
+            {/* 中央：あなた */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-500/90 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md z-10">
               あなた
             </div>
           </div>
         </div>
+
       </div>
 
       {/* 詳細スコア */}
