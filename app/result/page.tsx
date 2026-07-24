@@ -25,7 +25,7 @@ function ResultContent() {
   const getPercent = (key: string) => {
     const score = parseInt(searchParams.get(key) || '0', 10);
     // スコアの範囲を考慮して0-100%に正規化 (仮定: -4〜+4程度が中心)
-    const normalized = Math.max(0, Math.min(100, (score + 4) * 12.5));
+    const normalized = Math.max(0, Math.min(100, 100 - ((score + 4) * 12.5)));
     return normalized;
   };
 
