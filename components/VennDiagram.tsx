@@ -31,6 +31,41 @@ export default function VennDiagram({ scores }: Props) {
     return 'bg-rose-500/90 border-rose-600 text-white font-bold';             // 非常に低い（濃い赤）
   };
 
+  /**
+   * 赤くなっている（サイレント要因 < 0）箇所に応じて「あなた」の位置座標を算出する関数
+   * @param topScore 上の円のスコア
+   * @param leftScore 左下の円のスコア
+   * @param rightScore 右下の円のスコア
+   */
+  const getCenterPosition = (topScore: number, leftScore: number, rightScore: number) => {
+    const isTop = topScore < 0;
+    const isLeft = leftScore < 0;
+    const isRight = rightScore < 0;
+
+    const redCount = [isTop, isLeft, isRight].filter(Boolean).length;
+
+    // 全部赤(3) または 全部通常(0) ➔ 中央
+    if (redCount === 0 || redCount === 3) {
+      return { top: '50%', left: '50%' };
+    }
+
+    // 1つだけ赤の場合
+    if (redCount === 1) {
+      if (isTop) return { top: '28%', left: '50%' };
+      if (isLeft) return { top: '72%', left: '28%' };
+      if (isRight) return { top: '72%', left: '72%' };
+    }
+
+    // 2つ重なっている（赤）場合
+    if (redCount === 2) {
+      if (isTop && isLeft) return { top: '42%', left: '36%' };  // 上 ✕ 左下の重なり部
+      if (isTop && isRight) return { top: '42%', left: '64%' }; // 上 ✕ 右下の重なり部
+      if (isLeft && isRight) return { top: '74%', left: '50%' };// 左下 ✕ 右下の重なり部
+    }
+
+    return { top: '50%', left: '50%' };
+  };
+
   // 説明文
   const description = (key: keyof Scores, score: number) => {
     const label = LABELS[key];
@@ -57,6 +92,10 @@ export default function VennDiagram({ scores }: Props) {
   const envRate = Math.round((envSilent / totalSilent) * 100);
   const actRate = 100 - envRate;
 
+  // 「あなた」の位置を計算
+  const envUserPos = getCenterPosition(scores.time, scores.relations, scores.cognition);
+  const actUserPos = getCenterPosition(scores.interest, scores.activity, scores.values);
+
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mt-8">
       <div className="text-center mb-8">
@@ -78,7 +117,6 @@ export default function VennDiagram({ scores }: Props) {
             </span>
           </div>
 
-          {/* 固定サイズのベン図コンテナ（ひと回り小さく調整） */}
           <div className="relative w-64 h-64 sm:w-72 sm:h-72 my-4">
             {/* 上：時間 */}
             <div
@@ -104,8 +142,14 @@ export default function VennDiagram({ scores }: Props) {
               <span className="translate-x-4 translate-y-5">{LABELS.cognition}</span>
             </div>
 
-            {/* 中央：あなた */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-md z-10">
+            {/* 動的に移動する「あなた」 */}
+            <div
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg z-10 transition-all duration-700 ease-out"
+              style={{
+                top: envUserPos.top,
+                left: envUserPos.left,
+              }}
+            >
               あなた
             </div>
           </div>
@@ -119,7 +163,6 @@ export default function VennDiagram({ scores }: Props) {
             </span>
           </div>
 
-          {/* 固定サイズのベン図コンテナ（ひと回り小さく調整） */}
           <div className="relative w-64 h-64 sm:w-72 sm:h-72 my-4">
             {/* 上：興味 */}
             <div
@@ -145,8 +188,14 @@ export default function VennDiagram({ scores }: Props) {
               <span className="translate-x-4 translate-y-5">{LABELS.values}</span>
             </div>
 
-            {/* 中央：あなた */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-md z-10">
+            {/* 動的に移動する「あなた」 */}
+            <div
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg z-10 transition-all duration-700 ease-out"
+              style={{
+                top: actUserPos.top,
+                left: actUserPos.left,
+              }}
+            >
               あなた
             </div>
           </div>
