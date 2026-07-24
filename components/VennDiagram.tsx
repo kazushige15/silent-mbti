@@ -33,9 +33,6 @@ export default function VennDiagram({ scores }: Props) {
 
   /**
    * 赤くなっている（サイレント要因 < 0）箇所に応じて「あなた」の位置座標を算出する関数
-   * @param topScore 上の円のスコア
-   * @param leftScore 左下の円のスコア
-   * @param rightScore 右下の円のスコア
    */
   const getCenterPosition = (topScore: number, leftScore: number, rightScore: number) => {
     const isTop = topScore < 0;
@@ -142,9 +139,9 @@ export default function VennDiagram({ scores }: Props) {
               <span className="translate-x-4 translate-y-5">{LABELS.cognition}</span>
             </div>
 
-            {/* 動的に移動する「あなた」 */}
+            {/* 小型化＆動的に移動する「あなた」 */}
             <div
-              className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg z-10 transition-all duration-700 ease-out"
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-amber-500 border border-amber-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md z-10 transition-all duration-700 ease-out"
               style={{
                 top: envUserPos.top,
                 left: envUserPos.left,
@@ -188,9 +185,9 @@ export default function VennDiagram({ scores }: Props) {
               <span className="translate-x-4 translate-y-5">{LABELS.values}</span>
             </div>
 
-            {/* 動的に移動する「あなた」 */}
+            {/* 小型化＆動的に移動する「あなた」 */}
             <div
-              className="absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-amber-500/95 border-2 border-amber-600 text-white rounded-full flex items-center justify-center text-xs font-black shadow-lg z-10 transition-all duration-700 ease-out"
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-amber-500 border border-amber-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-md z-10 transition-all duration-700 ease-out"
               style={{
                 top: actUserPos.top,
                 left: actUserPos.left,
