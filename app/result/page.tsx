@@ -62,17 +62,8 @@ function ResultContent() {
               </div>
 
               <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200">
-                {/* 
-                  🎨 グラデーション変更ポイント:
-                  エメラルド-インディゴ（from-emerald-400 to-indigo-500）から
-                  オレンジ-パープル（from-orange-400 to-purple-600）に変更
-                */}
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-purple-600"></div>
                 <div 
-                  {/* 
-                    🎨 フチの色変更ポイント:
-                    border-indigo-600 から、サイレント側の色に合わせた border-purple-600 に変更
-                  */}
                   className="absolute top-0 h-4 w-4 bg-white border-2 border-purple-600 rounded-full shadow-md transition-all duration-500"
                   style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}
                 ></div>
