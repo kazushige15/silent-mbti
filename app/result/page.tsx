@@ -15,16 +15,39 @@ const PARAM_INFO: Record<string, { label: string; leftText: string; rightText: s
   values: { label: '価値観', leftText: '貢献志向', rightText: '自己完結' },
 };
 
+// 🌟 特定のタイプコードに対するキャッチーな名前の定義
+const TYPE_NAMES: Record<string, string> = {
+  'SSSSSS': '静寂の孤高スペシャリスト',
+  'AAAAAA': '超アクティブ街の顔役',
+  'SAAAAA': '社交的な暇人',
+  'ASSSSS': '何も知らない多忙人',
+  // 必要に応じて他のタイプ名を追加できます！
+};
+
+// 🌟 マップにない場合の自動フォールバック生成
+function getTypeName(code: string): string {
+  if (TYPE_NAMES[code]) return TYPE_NAMES[code];
+
+  // 簡易的な生成ロジック例 (1文字目:時間, 2文字目:人間関係)
+  const isTimeActive = code[0] === 'A';
+  const isRelActive = code[1] === 'A';
+
+  if (!isTimeActive && isRelActive) return '社交的な暇人';
+  if (isTimeActive && !isRelActive) return '単独行動の多忙人';
+  if (isTimeActive && isRelActive) return '街を駆け巡るアクティブ人';
+  return 'マイペースなマイタウン人';
+}
+
 function ResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const typeCode = searchParams.get('type') || 'SSSSSS';
+  const typeName = getTypeName(typeCode);
   
   // 生スコアを取得してパーセンテージ化
   const getPercent = (key: string) => {
     const score = parseInt(searchParams.get(key) || '0', 10);
-    // スコアの範囲を考慮して0-100%に正規化 (仮定: -4〜+4程度が中心)
     const normalized = Math.max(0, Math.min(100, 100 - ((score + 4) * 12.5)));
     return normalized;
   };
@@ -42,11 +65,17 @@ function ResultContent() {
     <div className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
         
-        {/* 6文字のアルファベットタイプ */}
+        {/* 6文字のアルファベットタイプ ＆ キャッチーな名前 */}
         <div className="text-center mb-8">
           <p className="text-sm font-bold text-indigo-500 tracking-widest uppercase mb-2">あなたの診断タイプ</p>
-          <h1 className="text-6xl font-black text-slate-800 tracking-tighter mb-4">{typeCode}</h1>
-          <p className="text-slate-500 font-medium">街との距離感を示す6つの指標</p>
+          <h1 className="text-5xl font-black text-slate-800 tracking-tighter mb-2">{typeCode}</h1>
+          
+          {/* 🌟 キャッチーな名前を表示する見出し */}
+          <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-purple-600 mb-4">
+            「{typeName}」
+          </h2>
+
+          <p className="text-slate-500 font-medium text-sm">街との距離感を示す6つの指標</p>
         </div>
 
         {/* 6つのバー分析 */}
@@ -67,11 +96,7 @@ function ResultContent() {
                 {/* グラデーションバー本体 */}
                 <div className="absolute inset-x-0 h-full bg-gradient-to-r from-orange-400 to-purple-600 rounded-full"></div>
                 
-                {/* 
-                  🌟 ツマミ（サイズ変更ポイント）
-                  h-7 w-7（28px）に拡大、border-3でフチもくっきりさせ、
-                  強めのシャドウ（shadow-xl）でしっかり立体感を出しました。
-                */}
+                {/* ツマミ */}
                 <div 
                   className="relative h-7 w-7 bg-white border-[3px] border-purple-600 rounded-full shadow-xl transition-all duration-500 z-10"
                   style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}
@@ -99,7 +124,7 @@ function ResultContent() {
         <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-8">
           <h3 className="font-bold text-slate-800 mb-2">診断分析レポート</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
-            あなたのタイプ {typeCode} は、地域との関わりにおいて「{typeCode[0] === 'A' ? '活動的な時間活用' : '静かな時間活用'}」を基盤としています。
+            あなたのタイプ {typeCode}（{typeName}）は、地域との関わりにおいて「{typeCode[0] === 'A' ? '活動的な時間活用' : '静かな時間活用'}」を基盤としています。
             詳細な分析に基づき、あなたの街との最適な距離感をご提案します。
           </p>
         </div>
