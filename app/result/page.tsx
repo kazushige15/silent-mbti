@@ -17,10 +17,10 @@ const PARAM_INFO: Record<string, { label: string; leftText: string; rightText: s
 
 // 🌟 特定のタイプコードに対するキャッチーな名前の定義
 const TYPE_NAMES: Record<string, string> = {
-  'SSSSSS': '静寂の孤高スペシャリスト',
-  'AAAAAA': '超アクティブ街の顔役',
-  'SAAAAA': '社交的な暇人',
-  'ASSSSS': '何も知らない多忙人',
+  'AOITFV': '超アクティブ街の顔役',
+  'SOITFV': '暇を持て余す街の顔役',
+  'SSITFV': '社交的な暇人',
+  'SSSTFV': '何も知らない多忙人',
   // 必要に応じて他のタイプ名を追加できます！
 };
 
